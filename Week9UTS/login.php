@@ -70,22 +70,13 @@
         .login-container input[type="submit"]:hover {
             background-color: #FF1493;
         }
-        .login-container p {
-            margin-top: 15px;
+        .error-message {
+            color: red;
             font-size: 14px;
-            color: #333;
-        }
-        @media (max-width: 768px) {
-            .form-group {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .form-group label, .form-group input {
-                width: 100%;
-            }
+            margin-top: 10px;
         }
         .footer {
-            background-color: rgba(255, 182, 193, 0.8); /* Sama seperti header */
+            background-color: rgba(255, 182, 193, 0.8);
             padding: 10px;
             text-align: right;
             position: relative;
@@ -101,8 +92,33 @@
         .footer a:hover {
             text-decoration: underline;
         }
-
     </style>
+    <script>
+        function validateForm(event) {
+            event.preventDefault(); // Mencegah pengiriman form secara default
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("error-message");
+            errorMessage.innerHTML = ""; // Mengosongkan pesan kesalahan sebelumnya
+
+            if (!username || !password) {
+                errorMessage.innerHTML = "Harus terisi";
+                return;
+            }
+            if (password.length < 5) {
+                errorMessage.innerHTML = "Password minimal 5 karakter";
+                return;
+            }
+            if (!/\d/.test(password)) {
+                errorMessage.innerHTML = "Password harus terdiri dari huruf dan angka";
+                return;
+            }
+
+            // Jika validasi sukses, simpan data username di session storage
+            sessionStorage.setItem("username", username);
+            window.location.href = "home.php"; // Pindah ke halaman Home
+        }
+    </script>
 </head>
 <body>
 
@@ -114,7 +130,7 @@
     <!-- Login Form -->
     <div class="login-container">
         <h2>Mohon login terlebih dahulu</h2>
-        <form action="home.php" method="POST">
+        <form onsubmit="validateForm(event)">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username">
@@ -123,7 +139,9 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password">
             </div>
+            <div class="error-message" id="error-message"></div>
             <input type="submit" value="LOGIN">
+        </form>
     </div>
 
     <div class="footer">
